@@ -1,0 +1,71 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+    body {
+        font-size: 20px;
+    }
+    .body {
+        width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #mainInput {
+        width: 100%;
+        font-size: 30px;
+        margin: 5px;
+    }
+
+    #response {
+        width: 100%;
+    }
+
+    button {
+        width: 100%;
+        padding: 5px;
+        font-size: 20px;
+        margin: 5px;
+    }
+</style>
+</head>
+<body>
+    <div class="body">
+        <input id="mainInput" type="text"></input>
+        <button type="submit" onclick="submit()" id="submitButton">Odeslat</button>
+        <div id="response">
+        </div>
+    </div>
+
+    <script>
+        var responseDiv = document.getElementById("response");
+        var input = document.getElementById("mainInput");
+
+        input.addEventListener("keyup", function(event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+            document.getElementById("submitButton").click();
+        }
+        });
+
+        function submit() {
+            query = mainInput.value;
+            query = query.normalize('NFKD').replace(/[^\w]/g, '').toLowerCase();
+            console.log(query);
+
+            var xhr= new XMLHttpRequest();
+            xhr.open('GET', query + '.html', true);
+            xhr.onreadystatechange= function() {
+                if (this.readyState !==4 ) return;
+                if (this.status !== 200) {
+                    responseDiv.innerHTML = "Nerozumím dotazu. Buď ho neznám nebo jsi ho zadal špatně.";
+                    return;
+                }
+                responseDiv.innerHTML = this.responseText;
+                mainInput.value = "";
+            };
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
